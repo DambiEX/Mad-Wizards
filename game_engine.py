@@ -1,11 +1,11 @@
 """
-TODO: make sure that no graphics are sent over the internet
-finish seperating gui and game_engine
+TOMULTI = TODO when i implement multiplayer
 """
 
 from GUI import Gui
 from consts import *
-import pygame, sys, random, time
+import pygame
+import sys, random, time
 from pygame.locals import *
 
 
@@ -13,34 +13,30 @@ class GameEngine:
     """
     the main engine for the game. everything is stored and calculated here.
     players will not need to have this on their computer, they will only need the gui.
-    does not do user events and graphics, that goes to the "gui" class.
+    does not do user events and graphics, that goes to the "gui" file.
     """
     def __init__(self):
-        self.arena = self.get_arena()  # the game map.
-        self.find_tiles_neighbours()  # finds the tiles sorrounding every tile.
+        self.game_board = self.get_game_board()  # the game map.
         self.wizard_list = self.spawn_wizards()
-        self.player_guis = []
+        self.player_GUIs = []
 
-    def get_arena(self):
+    def get_game_board(self):
         """
         generates a 2d game map.
         """
-        arena = []
+        game_board = []
 
         for h in range(MAP_HEIGHT):
-            arena.append([])
+            game_board.append([])
         for h in range(MAP_HEIGHT):
             for w in range(MAP_WIDTH):
-                arena[w].append(Tile(w, h))  # 3rd parameter is tile type
-        return arena
+                game_board[w].append(Tile(w, h))
 
-    def find_tiles_neighbours(self):
-        """
-        finds the tiles surrounding every tile.
-        """
-        for h in range(MAP_HEIGHT):
+        for h in range(MAP_HEIGHT):  # finds the tiles surrounding every tile.
             for w in range(MAP_WIDTH):
-                self.arena[w][h].find_neighbouring_tiles(self.arena)
+                game_board[w][h].find_neighbouring_tiles(game_board)
+
+        return game_board
 
     def spawn_wizards(self):
         """
@@ -54,13 +50,13 @@ class GameEngine:
     def get_cards_info_for_gui(self, wizard):
         mock_hand = []
         for card in wizard.hand:
-            mock_hand.append([card.spell, card.direction])  # not the graphic so we dont send pics on the web.
+            mock_hand.append([card.spell, card.direction])  # not the graphic so we don't send pics on the web.
         return mock_hand
 
     def send_info_to_gui(self, gui_number, new_hand):
         """
         sends a list of all the wizards as lists of [x, y, health, graphic] so the gui knows where everyone is.
-        if send_hand: sends the hands of all of players as lists of [spell, direction],
+        if send_hand: sends the hands of the right player as a list of [spell, direction],
         that the gui uses to find the right graphic.
         the players will send back the order and direction they want to play in another function.
         """
@@ -68,28 +64,21 @@ class GameEngine:
         wizard_info_list = []
         for wizard in self.wizard_list:
             wizard_info_list.append((wizard.x, wizard.y, wizard.health, wizard.graphic))
-        self.player_guis[gui_number].mock_wizards_list = wizard_info_list
+        self.player_GUIs[gui_number].mock_wizards_list = wizard_info_list
         if new_hand:
-            self.player_guis[gui_number].update_hand(new_hand)  # TOMULTI: send different hands to different GUIs
-        self.player_guis[gui_number].graphics()
-
-    def execute_card(self, card):
-        """
-        actually executes the Card functions that were stored in the cards
-        and are now stored in the cards_list
-        """
-        if card:  # handles the filler None objects.
-            card.spells_dict[card.spell]()
-        else:
-            print("null card")
-            return
+            self.player_GUIs[gui_number].update_hand(new_hand)  # TOMULTI: send different hands to different GUIs
+        self.player_GUIs[gui_number].graphics()
 
     def execute_cards_list(self, cards_list):
         """
         :param cards_list: a list of Card objects.
         """
-        while cards_list:
-            self.execute_card(cards_list.pop(0))
+        for card in cards_list:
+            if card:  # handles the filler None objects.
+                card.spells_dict[card.spell]()
+            else:
+                print("null card")
+                return
 
     def dont_crash_into_each_other(self):
         """
@@ -130,7 +119,7 @@ class GameEngine:
         """
 
         for card_index in range(HAND_SIZE):  # for every turn in the round
-            movement_cards_list = [None, None, None, None, None]   # list of Card objects. resets each turn
+            movement_cards_list = [None, None, None, None]   # list of Card objects. 1 per wizard. resets each round
             for index, wizard in enumerate(self.wizard_list):  # every wizard plays 1 card
                 # TODO: if played less than 2 cards:
                 movement_cards_list[index] = wizard.hand[card_index]
@@ -138,37 +127,34 @@ class GameEngine:
             self.dont_crash_into_each_other()
             for wizard in range(len(self.wizard_list)):
                 self.send_info_to_gui(wizard, False)  # updates graphics after every card is executed
-            time.sleep(0.5)  # so we can see every card happening. <insert animation here> :P
+            time.sleep(0.3)  # so we can see every card happening. <insert animation here> :P
             #  TODO: execute dmg list
 
         # TOMULTI: the gui will know to differentiate wizards based on the order of the list.
-
         for wizard in range(len(self.wizard_list)):
-            self.player_guis[wizard].new_round()
+            self.player_GUIs[wizard].new_round()
             self.send_info_to_gui(wizard, self.get_cards_info_for_gui(self.wizard_list[wizard]))
-            self.player_guis[wizard].send_data_to_game_engine()
+            self.player_GUIs[wizard].send_data_to_game_engine()
             # TODO: everyone draws a new hand, instead of just resetting position
 
     def run_round(self):
         """
-        gives wizards a set amount of time to rearrange their cards
-        before the cards list executes.
-        updates graphics in the meanwhile.
+        gives wizards a set amount of time to rearrange their cards before the turn ends.
+        right now infinite time, for testing.
         """
 
         """start_time = time.time() + round_DURATION  # for when and if we want timer on the rounds
         while start_time-time.time() > 0.0:"""
         while True:
             for wizard in range(len(self.wizard_list)):
-                self.player_guis[wizard].get_events()  # does stuff based on what the wizard clicks.
-                self.player_guis[wizard].graphics()
+                self.player_GUIs[wizard].get_events()  # does stuff based on what the wizard clicks.
+                self.player_GUIs[wizard].graphics()
 
     def run_game(self):
-
-        # these are here because the gui needs to boot before we send it info.
-        #TOMULTI do this for every gui with the correct hand
+        # this loop is here because the gui needs to boot before we send it info.
+        # TOMULTI do this for every gui with the correct hand
         for wizard in range(len(self.wizard_list)):
-            self.player_guis.append(Gui(self, wizard))
+            self.player_GUIs.append(Gui(self, wizard))
             self.send_info_to_gui(wizard, self.get_cards_info_for_gui(self.wizard_list[wizard]))
 
         while True:
@@ -181,31 +167,30 @@ class Card:
         self.wizard = wizard
         self.spell = spell
         self.direction = direction
+
         self.spells_dict = {
             STEP: self.step,  # 1 step in the direction
         }
 
     """
-    the rest of the class functions are function for every card.
-    every function saves the details of the action a wizard makes.
-    the action is executed by "execute_card" in game_engine.
-    these functions include wizard movement and all wizard abilities.
+    all of the class functions are function a for every spell.
+    every function saves the details of the spell a wizard casts.
+    the card is executed by "execute_card" in game_engine.
+    these functions include wizard movement and all wizard spells.
     """
 
     def step(self):
         """
-        moves a step in the path from move().
         :return: True if the step was made successfully.
         """
-        target_tile = game_engine.arena[self.wizard.x][self.wizard.y].neighbours[self.direction]
+        target_tile = game_engine.game_board[self.wizard.x][self.wizard.y].neighbours[self.direction]
         if target_tile:  # if not out of the map
             self.wizard.previous_locations.append(self.wizard.tile)
             self.wizard.move_to(target_tile)
             return True
-
         else:
             print("out of the map")
-        return False
+            return False
 
 
 class Thing:
@@ -213,10 +198,10 @@ class Thing:
     class for things that have a location and will be displayed on the map.
     includes: wizards, tiles, the selector
     """
-    def __init__(self, x, y, image_file):
+    def __init__(self, x, y, image_file_name):
         self.x = x if x else 0
         self.y = y if y else 0
-        self.graphic = image_file
+        self.graphic = image_file_name
 
 
 class Tile(Thing):
@@ -231,23 +216,23 @@ class Tile(Thing):
             = None, None, None, None
         self.graphic = "floor"
 
-    def find_neighbouring_tiles(self, arena):
+    def find_neighbouring_tiles(self, game_board):
         """
         finds the tiles that touch this one.
         """
         x = self.x
         y = self.y
         if y > 0:
-            self.up_neighbour = arena[x][y - 1]
+            self.up_neighbour = game_board[x][y - 1]
             self.neighbours[0] = self.up_neighbour
         if x < MAP_WIDTH - 1:
-            self.right_neighbour = arena[x + 1][y]
+            self.right_neighbour = game_board[x + 1][y]
             self.neighbours[1] = self.right_neighbour
         if y < MAP_HEIGHT - 1:
-            self.down_neighbour = arena[x][y + 1]
+            self.down_neighbour = game_board[x][y + 1]
             self.neighbours[2] = self.down_neighbour
         if x > 0:
-            self.left_neighbour = arena[x - 1][y]
+            self.left_neighbour = game_board[x - 1][y]
             self.neighbours[3] = self.left_neighbour
 
 
@@ -255,12 +240,12 @@ class Wizard(Thing):
     """
     players
     """
-    def __init__(self, x, y, health, image_file):
-        Thing.__init__(self, x, y, image_file)
+    def __init__(self, x, y, health, image_file_name):
+        Thing.__init__(self, x, y, image_file_name)
 
         # stats:
-        self.base_health = health
-        self.health = self.base_health
+        self.max_health = health
+        self.health = health
         self.tile = None
         self.previous_locations = []
         self.hand = [Card(self, STEP, UP),
@@ -274,7 +259,7 @@ class Wizard(Thing):
         """
         receives instructions from the gui, and assigns the correct order and
         direction to cards in hand.
-        :param mock_hand: a list of lists with [spell, direction] received from the gui.
+        :param mock_hand: a list of short lists with [spell, direction] received from the gui.
         :return: new_hand: a list of cards with correct order and directions.
         """
         print("reorganizing cards")
@@ -300,6 +285,5 @@ class Wizard(Thing):
             self.move_to(self.previous_locations.pop(0))
 
 
-# maybe i will change later for the gui to init before game_engine.
 game_engine = GameEngine()
 game_engine.run_game()

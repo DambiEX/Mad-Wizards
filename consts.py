@@ -5,6 +5,7 @@ from pygame.locals import *
 SELECTOR = "selector"
 NO_SELECTED_CARD = 69  # didn't want a None to be confused with a 0 so i made it clear.
 UP, RIGHT, DOWN, LEFT = 0, 1, 2, 3
+# spells:
 STEP, MAGIC_MISSILES, PATIENCE = "step", "magic_missiles", "patience"
 
 # CONSTS
@@ -21,7 +22,7 @@ P1_STARTING_X = 3
 P1_STARTING_Y = 5
 
 # game rules:
-NUMBER_OF_TURNS_IN_A_ROUND = 5
+# NUMBER OF TURNS IN A ROUND = 5
 HAND_SIZE = 5
 CARDS_PLAYED_PER_ROUND = 2
 
@@ -29,7 +30,6 @@ UNIT_PARAM_DICT = {  # starting x, starting y, starting health
     "P1": (P1_STARTING_X, P1_STARTING_Y, PLAYER_STARTING_HEALTH, "player")}
 
 # graphics:
-# dicts that hold all of the textures.
 GRAPHICS_DICT = {
     "floor": pygame.image.load("FLOOR.bmp"),
     "player": pygame.image.load("PLAYER.bmp"),

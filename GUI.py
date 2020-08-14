@@ -10,7 +10,7 @@ class Gui:
     """
     def __init__(self, game_engine, player_number):
         pygame.init()  # opens the game window
-        pygame.display.set_caption("The Game")
+        pygame.display.set_caption("Spellshop")
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.game_engine = game_engine
         self.player_number = player_number  # game_engine.wizard_list[0]  # TOMULTI: every player gets a different wizard
@@ -21,12 +21,12 @@ class Gui:
     def new_round(self):
         self.hand = []
 
-    def update_hand(self, tuple_hand):
+    def update_hand(self, mock_hand):
         """
-        :param tuple_hand: a list of tuples: (string spell, int direction)
+        :param mock_hand: a list of tuples: (string spell, int direction)
         :return:
         """
-        self.hand = tuple_hand
+        self.hand = mock_hand
         for card in self.hand:
             card[1] = 0  # card direction = UP
 
