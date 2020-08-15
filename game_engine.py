@@ -119,7 +119,7 @@ class GameEngine:
         """
 
         for card_index in range(HAND_SIZE):  # for every turn in the round
-            movement_cards_list = [None, None, None, None]   # list of Card objects. 1 per wizard. resets each round
+            movement_cards_list = [None, None, None, None]   # list of Card objects. 1 per wizard. resets each turn
             for index, wizard in enumerate(self.wizard_list):  # every wizard plays 1 card
                 # TODO: if played less than 2 cards:
                 movement_cards_list[index] = wizard.hand[card_index]

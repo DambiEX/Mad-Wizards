@@ -33,8 +33,9 @@ class Gui:
     def graphics(self):
         """
         displays every "thing"(wizard, tile, card, card selector) on the screen.
-        takes parameters from "game_engine"
-        param wizard_list: list of (x, y, health, graphic)
+        receives parameters from "game_engine"
+        self.mock.wizard_list = list of [x, y, health, graphic]
+
         """
         for h in range(MAP_HEIGHT):  # draws the map
             for w in range(MAP_WIDTH):
@@ -49,7 +50,7 @@ class Gui:
             self.screen.blit(rotated_card, ((1 + (CARD_SIZE * index)),
                                             (TILE_SIZE * MAP_HEIGHT)))  # draws the hand beneath the map
 
-        if self.selected_card != NO_SELECTED_CARD:  # it might be == 0.
+        if self.selected_card != NO_SELECTED_CARD:  # the value 0 is allowed.
             self.screen.blit(GRAPHICS_DICT[SELECTOR], ((1 + (CARD_SIZE * self.selected_card)), MAP_HEIGHT * TILE_SIZE))
 
         pygame.display.update()  # updates the display
@@ -105,12 +106,13 @@ class Gui:
                     self.select_card(3)
                 elif event.key == K_5:
                     self.select_card(4)
+            """
+            else:
+                print(event)  # prints events for debugging
 
-            # else:
-                # print(event)  # prints events for debugging
-
-            """elif event.type == MOUSEBUTTONUP:
-                x, y = pygame.mouse.get_pos()"""
+            elif event.type == MOUSEBUTTONUP:
+                x, y = pygame.mouse.get_pos()
+            """
 
     def send_data_to_game_engine(self):
         self.game_engine.wizard_list[self.player_number].reorganize_cards(self.hand)
@@ -134,16 +136,9 @@ class Gui:
         if card_index >= new_pos:
             self.hand.insert(new_pos, self.hand[card_index])
             self.hand.pop(card_index+1)
-
-            """self.hand_display.insert(new_pos, self.hand_display[card_index])
-            self.hand_display.pop(card_index + 1)"""
-
         else:
             self.hand.insert(new_pos+1, self.hand[card_index])
             self.hand.pop(card_index)
-
-            """self.hand_display.insert(new_pos + 1, self.hand_display[card_index])
-            self.hand_display.pop(card_index)"""
 
     def rotate_card(self, new_direction):
         self.hand[self.selected_card][1] = new_direction
