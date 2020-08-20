@@ -3,7 +3,7 @@ from pygame.locals import *
 
 # magic numbers:
 SELECTOR, FLOOR = "selector", "floor"
-P1 = "P1"
+P1, P2, P3, P4 = 0, 1, 2, 3
 NO_SELECTED_CARD = "no_selected_card"  # didn't want a None to be confused with a 0 so i made it clear.
 UP, RIGHT, DOWN, LEFT = 0, 1, 2, 3
 # spells:
