@@ -14,33 +14,40 @@ class Gui:
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.game_engine = game_engine
         self.player_number = player_number  # game_engine.wizard_list[0]  # TOMULTI: every player gets a different wizard
-        self.mock_wizards_list = []  # [x, y, health, graphic]
+        self.wizards_list = []  # [x, y, health, graphic]  # TODO: change to name without mock
         self.selected_card = NO_SELECTED_CARD  # the card the player is interacting with. int 0-4. NO SELECT is 69
         self.hand = []
 
-    def new_round_hand(self, cards_drawn):
+    def receive_data_from_game_engine(self, wizard_list, cards_drawn):
         """
-        Called at the start of every round in game_engine.new_round()
+        :param wizard_list: a list of: (x, y, health, ID)
         :param cards_drawn: a list of strings
         """
-        self.hand = [[card, UP] for card in cards_drawn]
+        self.wizards_list = [WizardRepresentation(*wizard) for wizard in wizard_list]
+        if cards_drawn:
+            self.hand = [CardRepresentation(card, UP) for card in cards_drawn]
+        else:
+            """
+            If there are no new cards drawn, it means this function is called at
+            the end of a turn when the cards are executed, which means we need time between cards.
+            """
+            time.sleep(turn_animation_time)  # so we can see every card happening.
 
     def graphics(self):
         """
         Displays every "thing"(wizard, tile, card, card selector) on the screen.
-        Deceives parameters from "game_engine"
-        self.mock.wizard_list = list of [x, y, health, graphic]
+        Receives parameters from "game_engine"
         """
         for h in range(MAP_HEIGHT):  # draws the map
             for w in range(MAP_WIDTH):
-                self.screen.blit(GRAPHICS_DICT["floor"], (h * TILE_SIZE, w * TILE_SIZE))
+                self.screen.blit(GRAPHICS_DICT[FLOOR], (h * TILE_SIZE, w * TILE_SIZE))
 
-        for wizard in self.mock_wizards_list:  # displays all wizards
-            self.screen.blit(GRAPHICS_DICT[wizard[3]], (wizard[0] * TILE_SIZE, wizard[1] * TILE_SIZE))
+        for wizard in self.wizards_list:  # displays all wizards
+            self.screen.blit(GRAPHICS_DICT[wizard.ID], (wizard.x * TILE_SIZE, wizard.y * TILE_SIZE))
 
         for index, card in enumerate(self.hand):  # draws the hand beneath the map
             rotated_card = pygame.transform.rotate(
-                CARDS_GRAPHICS_DICT[card[0]], 360 - card[1] * 90)  # [0] is the type, [1] is the direction
+                CARDS_GRAPHICS_DICT[card.spell], 360 - card.direction * 90)
             self.screen.blit(rotated_card, ((1 + (CARD_SIZE * index)),
                                             (TILE_SIZE * MAP_HEIGHT)))
 
@@ -89,7 +96,7 @@ class Gui:
                         self.relocate_card(3)
                     elif event.key == K_5:
                         self.relocate_card(4)
-                    elif event.key == K_6:  # TODO: add "or esc"
+                    elif event.key == K_ESCAPE:
                         self.select_card(NO_SELECTED_CARD)  # cancel selection
 
                 # Choose which card to interact with.
@@ -103,6 +110,7 @@ class Gui:
                     self.select_card(3)
                 elif event.key == K_5:
                     self.select_card(4)
+
             """
             else:
                 print(event)  # prints events for debugging
@@ -112,6 +120,9 @@ class Gui:
             """
 
     def send_data_to_game_engine(self):
+        """
+        Called when the "q" key is pressed.
+        """
         self.game_engine.wizard_list[self.player_number].reorganize_cards(self.hand)
 
     def select_card(self, selected_index):
@@ -138,6 +149,19 @@ class Gui:
             self.hand.pop(card_index)
 
     def rotate_card(self, new_direction):
-        self.hand[self.selected_card][1] = new_direction
+        self.hand[self.selected_card].direction = new_direction
         self.select_card(NO_SELECTED_CARD)
 
+
+class WizardRepresentation:
+    def __init__(self, x, y, health, ID):
+        self.x = x
+        self.y = y
+        self.health = health
+        self.ID = ID
+
+
+class CardRepresentation:
+    def __init__(self, spell, direction):
+        self.spell = spell
+        self.direction = direction
