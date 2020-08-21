@@ -186,7 +186,7 @@ class Card:
 class Thing:
     """
     Class for things that have a location and will be displayed on the map.
-    Includes: wizards, tiles, the selector
+    Includes: wizards, tiles
     """
     def __init__(self, x, y, image_file_name):
         self.x = x if x else 0
@@ -199,7 +199,7 @@ class Tile(Thing):
     Map tiles. generated at the start of the game
     """
     def __init__(self, x, y):
-        Thing.__init__(self, x, y, None)
+        super().__init__(x, y, None)
         self.wizard = None  # what wizards are standing on the tile.
         self.neighbours = [None, None, None, None]  # tiles touching this one
         self.left_neighbour, self.right_neighbour, self.up_neighbour, self.down_neighbour \
@@ -230,8 +230,8 @@ class Wizard(Thing):
     """
     Players.
     """
-    def __init__(self, x, y, health, ID):
-        Thing.__init__(self, x, y, ID)
+    def __init__(self, x, y, health, id_number):
+        super().__init__(x, y, id_number)
 
         # stats:
         self.max_health = health

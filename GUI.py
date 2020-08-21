@@ -8,12 +8,12 @@ class Gui:
     Handles what the user sees and does. this is what every player has on their system.
     Does not change the game in any way, only sends info to and from game_engine.
     """
-    def __init__(self, game_engine, player_number):
+    def __init__(self, game_engine, player_ID):
         pygame.init()  # opens the game window
         pygame.display.set_caption("Spellshop")
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.game_engine = game_engine
-        self.player_number = player_number  # game_engine.wizard_list[0]  # TOMULTI: every player gets a different wizard
+        self.player_ID = player_ID  # game_engine.wizard_list[0]  # TOMULTI: every player gets a different wizard
         self.wizards_list = []  # [x, y, health, graphic]  # TODO: change to name without mock
         self.selected_card = NO_SELECTED_CARD  # the card the player is interacting with. int 0-4. NO SELECT is 69
         self.hand = []
@@ -123,7 +123,7 @@ class Gui:
         """
         Called when the "q" key is pressed.
         """
-        self.game_engine.wizard_list[self.player_number].reorganize_cards(self.hand)
+        self.game_engine.wizard_list[self.player_ID].reorganize_cards(self.hand)
 
     def select_card(self, selected_index):
         self.selected_card = selected_index
