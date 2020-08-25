@@ -8,19 +8,19 @@ class Gui:
     Handles what the user sees and does. this is what every player has on their system.
     Does not change the game in any way, only sends info to and from game_engine.
     """
-    def __init__(self, game_engine, player_ID):
+    def __init__(self, game_engine, player_id):
         pygame.init()  # opens the game window
         pygame.display.set_caption("Spellshop")
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         self.game_engine = game_engine
-        self.player_ID = player_ID  # game_engine.wizard_list[0]  # TOMULTI: every player gets a different wizard
+        self.player_id = player_id  # game_engine.wizard_list[0]  # TOMULTI: every player gets a different wizard
         self.wizards_list = []  # [x, y, health, graphic]  # TODO: change to name without mock
         self.selected_card = NO_SELECTED_CARD  # the card the player is interacting with. int 0-4. NO SELECT is 69
         self.hand = []
 
     def receive_data_from_game_engine(self, wizard_list, cards_drawn):
         """
-        :param wizard_list: a list of: (x, y, health, ID)
+        :param wizard_list: a list of: (x, y, health, id)
         :param cards_drawn: a list of strings
         """
         self.wizards_list = [WizardRepresentation(*wizard) for wizard in wizard_list]
@@ -43,7 +43,7 @@ class Gui:
                 self.screen.blit(GRAPHICS_DICT[FLOOR], (h * TILE_SIZE, w * TILE_SIZE))
 
         for wizard in self.wizards_list:  # displays all wizards
-            self.screen.blit(GRAPHICS_DICT[wizard.ID], (wizard.x * TILE_SIZE, wizard.y * TILE_SIZE))
+            self.screen.blit(GRAPHICS_DICT[wizard.id], (wizard.x * TILE_SIZE, wizard.y * TILE_SIZE))
 
         for index, card in enumerate(self.hand):  # draws the hand beneath the map
             rotated_card = pygame.transform.rotate(
@@ -123,7 +123,7 @@ class Gui:
         """
         Called when the "q" key is pressed.
         """
-        self.game_engine.wizard_list[self.player_ID].reorganize_cards(self.hand)
+        self.game_engine.wizard_list[self.player_id].reorganize_cards(self.hand)
 
     def select_card(self, selected_index):
         self.selected_card = selected_index
@@ -154,11 +154,11 @@ class Gui:
 
 
 class WizardRepresentation:
-    def __init__(self, x, y, health, ID):
+    def __init__(self, x, y, health, id):
         self.x = x
         self.y = y
         self.health = health
-        self.ID = ID
+        self.id = id
 
 
 class CardRepresentation:
