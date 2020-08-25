@@ -116,8 +116,8 @@ class GameEngine:
             movement_cards_list = [None, None, None, None]   # list of Card objects. 1 per wizard. resets each turn
             for index, wizard in enumerate(self.wizard_list):  # every wizard plays 1 card
                 # TODO: if played less than 2 cards:
-                movement_cards_list[index] = wizard.hand[card_index]  # makes a list of all the movement for this turn
-            self.execute_cards_list(movement_cards_list)  # executes the cards in the list for this turn
+                movement_cards_list[index] = wizard.hand[card_index]
+            self.execute_cards_list(movement_cards_list)  # happens once per TURN
             self.dont_crash_into_each_other()  # resolves collisions made by the movement
             for wizard in range(len(self.wizard_list)):
                 self.send_info_to_gui(wizard, False)  # updates graphics after every card is executed
