@@ -199,12 +199,11 @@ class Tile(Thing):
     Map tiles. generated at the start of the game
     """
     def __init__(self, x, y):
-        super().__init__(x, y, None)
+        super().__init__(x, y, (WHITE_FLOOR if (x+y) % 2 == 0 else BLACK_FLOOR))
         self.wizard = None  # what wizards are standing on the tile.
         self.neighbours = [None, None, None, None]  # tiles touching this one
         self.left_neighbour, self.right_neighbour, self.up_neighbour, self.down_neighbour \
             = self.neighbours
-        self.graphic = FLOOR
 
     def find_neighbouring_tiles(self, game_board):
         """

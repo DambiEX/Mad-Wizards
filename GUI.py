@@ -40,7 +40,7 @@ class Gui:
         """
         for h in range(MAP_HEIGHT):  # draws the map
             for w in range(MAP_WIDTH):
-                self.screen.blit(GRAPHICS_DICT[FLOOR], (h * TILE_SIZE, w * TILE_SIZE))
+                self.screen.blit(GRAPHICS_DICT[WHITE_FLOOR if (w+h) % 2 == 0 else BLACK_FLOOR], (h * TILE_SIZE, w * TILE_SIZE))
 
         for wizard in self.wizards_list:  # displays all wizards
             self.screen.blit(GRAPHICS_DICT[wizard.ID], (wizard.x * TILE_SIZE, wizard.y * TILE_SIZE))

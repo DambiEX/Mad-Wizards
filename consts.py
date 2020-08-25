@@ -2,7 +2,7 @@ import pygame, sys, random, time
 from pygame.locals import *
 
 # magic numbers:
-SELECTOR, FLOOR = "selector", "floor"
+SELECTOR, WHITE_FLOOR, BLACK_FLOOR = "selector", "white floor", "black floor"
 P1, P2, P3, P4 = 0, 1, 2, 3
 NO_SELECTED_CARD = "no_selected_card"  # didn't want a None to be confused with a 0 so i made it clear.
 UP, RIGHT, DOWN, LEFT = 0, 1, 2, 3
@@ -35,7 +35,8 @@ PLAYERS_PARAMETERS_LIST = [  # starting x, starting y, starting health
 
 # graphics:
 GRAPHICS_DICT = {
-    FLOOR: pygame.image.load("FLOOR.bmp"),
+    WHITE_FLOOR: pygame.image.load("WHITE_FLOOR.bmp"),
+    BLACK_FLOOR: pygame.image.load("BLACK_FLOOR.bmp"),
     P1: pygame.image.load("P1.bmp"),
     SELECTOR: pygame.image.load("SELECTOR.bmp")
     }
