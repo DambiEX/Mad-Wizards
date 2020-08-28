@@ -33,6 +33,10 @@ class Gui:
             """
             time.sleep(turn_animation_time)  # so we can see every card happening.
 
+    def get_card_graphic(self, card_name):
+        return pygame.image.load("card_assets/" + card_name + ".bmp")
+        # e.g.  STEP: pygame.image.load("cards/step/step.bmp"),
+
     def graphics(self):
         """
         Displays every "thing"(wizard, tile, card, card selector) on the screen.
@@ -47,7 +51,7 @@ class Gui:
 
         for index, card in enumerate(self.hand):  # draws the hand beneath the map
             rotated_card = pygame.transform.rotate(
-                CARDS_GRAPHICS_DICT[card.spell], 360 - card.direction * 90)
+                self.get_card_graphic(card.spell), 360 - card.direction * 90)
             self.screen.blit(rotated_card, ((1 + (CARD_SIZE * index)),
                                             (TILE_SIZE * MAP_HEIGHT)))
 

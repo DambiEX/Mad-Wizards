@@ -4,6 +4,7 @@ TOMULTI = TODO when i implement multiplayer
 
 from GUI import Gui
 from consts import *
+import cards
 import pygame
 import sys, random, time
 from pygame.locals import *
@@ -135,7 +136,7 @@ class GameEngine:
         Right now infinite time, for testing.
         """
 
-        """start_time = time.time() + round_DURATION  # for when and if we want timer on the rounds
+        """start_time = time.time() + ROUND_DURATION  # for when and if we want timer on the rounds
         while start_time-time.time() > 0.0:"""
         while True:
             for wizard in range(len(self.wizard_list)):

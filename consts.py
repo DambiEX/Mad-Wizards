@@ -16,7 +16,7 @@ MAP_HEIGHT = 7
 TILE_SIZE = 55
 CARD_SIZE = int(TILE_SIZE * MAP_WIDTH / 5)
 WINDOW_SIZE = (MAP_WIDTH * TILE_SIZE, (MAP_HEIGHT * TILE_SIZE) + CARD_SIZE)
-round_DURATION = 8.0  # for when we play with a timer
+ROUND_DURATION = 8.0  # for when we play with a timer
 turn_animation_time = 0.3
 # TOMULTI: give every player a starting location
 PLAYER_STARTING_HEALTH = 30
@@ -39,11 +39,6 @@ GRAPHICS_DICT = {
     BLACK_FLOOR: pygame.image.load("BLACK_FLOOR.bmp"),
     P1: pygame.image.load("P1.bmp"),
     SELECTOR: pygame.image.load("SELECTOR.bmp")
-    }
-CARDS_GRAPHICS_DICT = {
-    STEP: pygame.image.load("STEP.bmp"),
-    MAGIC_MISSILES: pygame.image.load("MAGIC_MISSILES.bmp"),
-    PATIENCE: pygame.image.load("PATIENCE.bmp")
     }
 
 for i in GRAPHICS_DICT.items():  # makes all non-card textures transparent. including tiles, but that is not a problem.
