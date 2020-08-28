@@ -68,5 +68,3 @@ class ServerGame:
         for client_socket in self.client_sockets:
             client_socket.send(information)
                 
-
-
