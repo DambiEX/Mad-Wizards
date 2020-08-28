@@ -17,7 +17,7 @@ TILE_SIZE = 55
 CARD_SIZE = int(TILE_SIZE * MAP_WIDTH / 5)
 WINDOW_SIZE = (MAP_WIDTH * TILE_SIZE, (MAP_HEIGHT * TILE_SIZE) + CARD_SIZE)
 ROUND_DURATION = 8.0  # for when we play with a timer
-turn_animation_time = 0.3
+TURN_ANIMATION_TIME = 0.3
 # TOMULTI: give every player a starting location
 PLAYER_STARTING_HEALTH = 30
 P1_STARTING_X = 3

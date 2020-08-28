@@ -31,7 +31,7 @@ class Gui:
             If there are no new cards drawn, it means this function is called at
             the end of a turn when the cards are executed, which means we need time between cards.
             """
-            time.sleep(turn_animation_time)  # so we can see every card happening.
+            time.sleep(TURN_ANIMATION_TIME)  # so we can see every card happening.
 
     def get_card_graphic(self, card_name):
         return pygame.image.load("card_assets/" + card_name + ".bmp")
