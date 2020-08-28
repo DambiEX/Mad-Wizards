@@ -31,7 +31,11 @@ class Gui:
             If there are no new cards drawn, it means this function is called at
             the end of a turn when the cards are executed, which means we need time between cards.
             """
-            time.sleep(turn_animation_time)  # so we can see every card happening.
+            time.sleep(TURN_ANIMATION_TIME)  # so we can see every card happening.
+
+    def get_card_graphic(self, card_name):
+        return pygame.image.load("card_assets/" + card_name + ".bmp")
+        # e.g.  STEP: pygame.image.load("cards/step/step.bmp"),
 
     def graphics(self):
         """
@@ -40,14 +44,14 @@ class Gui:
         """
         for h in range(MAP_HEIGHT):  # draws the map
             for w in range(MAP_WIDTH):
-                self.screen.blit(GRAPHICS_DICT[FLOOR], (h * TILE_SIZE, w * TILE_SIZE))
+                self.screen.blit(GRAPHICS_DICT[WHITE_FLOOR if (w + h) % 2 == 0 else BLACK_FLOOR], (h * TILE_SIZE, w * TILE_SIZE))
 
         for wizard in self.wizards_list:  # displays all wizards
             self.screen.blit(GRAPHICS_DICT[wizard.id], (wizard.x * TILE_SIZE, wizard.y * TILE_SIZE))
 
         for index, card in enumerate(self.hand):  # draws the hand beneath the map
             rotated_card = pygame.transform.rotate(
-                CARDS_GRAPHICS_DICT[card.spell], 360 - card.direction * 90)
+                self.get_card_graphic(card.spell), 360 - card.direction * 90)
             self.screen.blit(rotated_card, ((1 + (CARD_SIZE * index)),
                                             (TILE_SIZE * MAP_HEIGHT)))
 

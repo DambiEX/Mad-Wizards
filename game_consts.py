@@ -2,7 +2,7 @@ import pygame, sys, random, time
 from pygame.locals import *
 
 # magic numbers:
-SELECTOR, FLOOR = "selector", "floor"
+SELECTOR, WHITE_FLOOR, BLACK_FLOOR = "selector", "white floor", "black floor"
 P1, P2, P3, P4 = 0, 1, 2, 3
 NO_SELECTED_CARD = "no_selected_card"  # didn't want a None to be confused with a 0 so i made it clear.
 UP, RIGHT, DOWN, LEFT = 0, 1, 2, 3
@@ -16,8 +16,8 @@ MAP_HEIGHT = 7
 TILE_SIZE = 55
 CARD_SIZE = int(TILE_SIZE * MAP_WIDTH / 5)
 WINDOW_SIZE = (MAP_WIDTH * TILE_SIZE, (MAP_HEIGHT * TILE_SIZE) + CARD_SIZE)
-round_DURATION = 8.0  # for when we play with a timer
-turn_animation_time = 0.3
+ROUND_DURATION = 8.0  # for when we play with a timer
+TURN_ANIMATION_TIME = 0.3
 # TOMULTI: give every player a starting location
 PLAYER_STARTING_HEALTH = 30
 P1_STARTING_X = 3
@@ -35,14 +35,10 @@ PLAYERS_PARAMETERS_LIST = [  # starting x, starting y, starting health
 
 # graphics:
 GRAPHICS_DICT = {
-    FLOOR: pygame.image.load("FLOOR.bmp"),
+    WHITE_FLOOR: pygame.image.load("WHITE_FLOOR.bmp"),
+    BLACK_FLOOR: pygame.image.load("BLACK_FLOOR.bmp"),
     P1: pygame.image.load("P1.bmp"),
     SELECTOR: pygame.image.load("SELECTOR.bmp")
-    }
-CARDS_GRAPHICS_DICT = {
-    STEP: pygame.image.load("STEP.bmp"),
-    MAGIC_MISSILES: pygame.image.load("MAGIC_MISSILES.bmp"),
-    PATIENCE: pygame.image.load("PATIENCE.bmp")
     }
 
 for i in GRAPHICS_DICT.items():  # makes all non-card textures transparent. including tiles, but that is not a problem.
