@@ -31,6 +31,9 @@ class ClientGame:
                 information = json.loads(information_str)
                 self.gui.update(information)
 
-            self.gui.load_events()
+            self.gui.load_events(self)
             self.gui.update_display()
 
+    def send(self, json_object):
+        information = json.dumps(json_object)
+        self.server_socket.send(information)
