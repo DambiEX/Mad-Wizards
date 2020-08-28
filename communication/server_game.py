@@ -20,7 +20,6 @@ class ServerGame:
             self.wait_for_players_connection()
             self.run_game()
 
-
     @property
     def connected_players(self):
         return len(self.client_sockets)

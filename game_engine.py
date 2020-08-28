@@ -3,7 +3,7 @@ TOMULTI = TODO when i implement multiplayer
 """
 
 from GUI import Gui
-from consts import *
+from game_consts import *
 import cards
 import pygame
 import sys, random, time
