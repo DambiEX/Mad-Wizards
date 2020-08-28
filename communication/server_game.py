@@ -18,7 +18,6 @@ class ServerGame:
 
         if run:
             self.wait_for_players_connection()
-            self.start_game()
             self.run_game()
 
 
@@ -45,11 +44,14 @@ class ServerGame:
                 
                 self.client_sockets.append(new_socket)
                 self.send({CONNECTED_PLAYERS: self.connected_players})
-
-    def start_game(self):
+        self.game_engine.start_game(self)
 
     def run_game(self):
-        while True:
+        """
+        The main game loop
+        Checks for client actions, then executes them in the game_engine
+        """
+        while self.game_engine.in_proggress:
             read_sockets, _, _ = select(self.client_sockets, [], [], 10)
             for client_socket in read_sockets:
                 information_str = client_socket.recv(4096)
@@ -58,6 +60,10 @@ class ServerGame:
             self.game_engine.check_for_actions(self)
 
     def send(self, json_object):
+        """
+        Sends a dict as a json string to all the clients.
+        :type json_object: dict(str|any)
+        """
         information = json.dumps(json_object)
         for client_socket in self.client_sockets:
             client_socket.send(information)
