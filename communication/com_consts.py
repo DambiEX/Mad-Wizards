@@ -1,7 +1,12 @@
 
 
+import sys
+sys.path.append("../")
+
 import pygame
 pygame.init()
+
+
 
 
 # lobby consts
