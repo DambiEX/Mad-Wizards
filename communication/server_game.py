@@ -3,7 +3,8 @@
 import os
 import socket
 from select import select
-from consts import *
+from com_consts import *
+from packet_handler import PacketHandler
 import game_engine
 
 
@@ -30,7 +31,7 @@ class ServerGame:
         """
         self.listening_socket.bind((socket.gethostname(), GAME_PORT))  # Open the server
         self.listening_socket.listen(PLAYERS_NUM)
-        print(f"Waiting fo {PLAYERS_NUM} players to connect.")
+        print(f"Waiting for {PLAYERS_NUM} players to connect.")
         while self.connected_players < PLAYERS_NUM:
             new_socket, new_address = self.listening_socket.accept()
             if new_socket.recv(COMMUNICATION_PASSWORD_LEN) != COMMUNICATION_PASSWORD:
@@ -41,7 +42,7 @@ class ServerGame:
                 print(f"Accepted a new player from {new_address}.")
                 print(f"{self.connected_players} out of {PLAYERS_NUM} connected.")
                 
-                self.client_sockets.append(new_socket)
+                self.client_sockets.append(PacketHandler(new_socket))
                 self.send({CONNECTED_PLAYERS: self.connected_players})
         self.game_engine.start_game(self)
 
@@ -51,19 +52,26 @@ class ServerGame:
         Checks for client actions, then executes them in the game_engine
         """
         while self.game_engine.in_proggress:
-            read_sockets, _, _ = select(self.client_sockets, [], [], 10)
-            for client_socket in read_sockets:
+            active_sockets, _, _ = select(self.client_sockets, [], [], 10)
+            information = []
+            for client_socket in active_sockets:
                 information_str = client_socket.recv(4096)
-                information = json.loads(information_str)
-                self.game_engine.update(information)
-            self.game_engine.check_for_actions(self)
+                player_information = json.loads(information_str)
+                information.append(player_information)
+            self.game_engine.update(information, self)
 
-    def send(self, json_object):
+    def send_player(self, player, information):
+        """
+        Sends a dict as a json string to a spesific player.
+        :type information: dict(str|any)
+        """
+        self.client_sockets[player].send(information)
+
+    def send_all(self, information):
         """
         Sends a dict as a json string to all the clients.
-        :type json_object: dict(str|any)
+        :type information: dict(str|any)
         """
-        information = json.dumps(json_object)
         for client_socket in self.client_sockets:
             client_socket.send(information)
                 
